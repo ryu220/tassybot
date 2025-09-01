@@ -5,9 +5,8 @@ import json
 import os
 from typing import Optional
 from dotenv import load_dotenv
-import config
 
-# 環境変数の読み込み（フォールバック用）
+# 環境変数の読み込み
 load_dotenv()
 
 # Discord Bot設定
@@ -15,10 +14,10 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# 設定値（config.pyから読み込み、環境変数がフォールバック）
-DISCORD_TOKEN = config.DISCORD_TOKEN or os.getenv('DISCORD_TOKEN')
-DIFY_API_KEY = config.DIFY_API_KEY or os.getenv('DIFY_API_KEY')
-DIFY_API_BASE = config.DIFY_API_BASE or os.getenv('DIFY_API_BASE', 'https://api.dify.ai/v1')
+# 設定値（環境変数から読み込み）
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+DIFY_API_KEY = os.getenv('DIFY_API_KEY')
+DIFY_API_BASE = os.getenv('DIFY_API_BASE', 'https://api.dify.ai/v1')
 
 class DifyClient:
     """Dify APIクライアント"""
