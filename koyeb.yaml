@@ -1,0 +1,20 @@
+name: dify-discord-bot
+service:
+  name: dify-discord-bot
+  type: web
+  ports:
+    - port: 8080
+      protocol: http
+  routes:
+    - path: /
+      protocol: http
+  env:
+    - name: DISCORD_TOKEN
+      value: "{{.DISCORD_TOKEN}}"
+    - name: DIFY_API_KEY
+      value: "{{.DIFY_API_KEY}}"
+    - name: DIFY_API_BASE
+      value: "https://api.dify.ai/v1"
+  build:
+    builder: dockerfile
+    dockerfile: Dockerfile
