@@ -17,4 +17,4 @@ COPY . .
 RUN rm -f .env
 
 # ボットを起動
-CMD ["python", "dify_discord_bot.py"]
+CMD ["python", "-u", "dify_discord_bot.py"]

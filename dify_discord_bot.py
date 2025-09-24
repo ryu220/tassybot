@@ -84,17 +84,22 @@ async def on_message(message):
         print("🤖 ボット自身のメッセージを無視")
         return
     
-    # メンションされた場合またはDMの場合に応答
-    print(f"🔍 メンション確認: {bot.user.mentioned_in(message)}")
-    print(f"🔍 DM確認: {isinstance(message.channel, discord.DMChannel)}")
+    # メンションされた場合またはDMの場合に応答（mentions配列も考慮）
+    mentioned = (bot.user in getattr(message, "mentions", [])) or bot.user.mentioned_in(message)
+    is_dm = isinstance(message.channel, discord.DMChannel)
+    print(f"🔍 メンション確認: {mentioned}")
+    print(f"🔍 DM確認: {is_dm}")
     
-    if bot.user.mentioned_in(message) or isinstance(message.channel, discord.DMChannel):
+    if mentioned or is_dm:
         if not dify_client:
             await message.reply("❌ Dify APIが設定されていません。管理者に連絡してください。")
             return
         
-        # メンション部分を除去してクエリを取得
-        query = message.content.replace(f'<@{bot.user.id}>', '').strip()
+        # メンション部分を除去してクエリを取得（<@id> と <@!id> の両方に対応）
+        content = message.content
+        content = content.replace(f'<@{bot.user.id}>', '')
+        content = content.replace(f'<@!{bot.user.id}>', '')
+        query = content.strip()
         if not query:
             await message.reply("質問を入力してください。")
             return
