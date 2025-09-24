@@ -77,7 +77,21 @@ async def on_ready():
 async def on_message(message):
     """メッセージ受信時の処理"""
     # デバッグ用ログ
-    print(f"📨 メッセージ受信: {message.author} -> {message.content}")
+    try:
+        channel_name = getattr(message.channel, 'name', 'DM')
+        guild_name = message.guild.name if hasattr(message, 'guild') and message.guild else 'DM'
+        print(f"📨 メッセージ受信: [{guild_name} / {channel_name}] {message.author} -> {message.content}")
+        # チャンネル権限確認（ボット視点）
+        bot_member = message.guild.get_member(bot.user.id) if message.guild else None
+        if bot_member and hasattr(message, 'channel'):
+            ch_perms = message.channel.permissions_for(bot_member)
+            print(
+                "🔐 ChannelPerms: "
+                f"view={ch_perms.view_channel}, read_hist={ch_perms.read_message_history}, "
+                f"send={ch_perms.send_messages}"
+            )
+    except Exception as e:
+        print(f"⚠️ ログ出力中に例外: {e}")
     
     # ボット自身のメッセージは無視
     if message.author == bot.user:
